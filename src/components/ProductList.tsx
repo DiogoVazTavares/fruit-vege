@@ -4,10 +4,10 @@ import ProductCard from './ProductCard';
 
 type ProductType = 'fruit' | 'vegetables';
 
-interface ProductListProps {
+type ProductListProps = {
   activeProduct: ProductType;
   searchQuery: string;
-}
+};
 
 const ProductList = ({ activeProduct, searchQuery }: ProductListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
