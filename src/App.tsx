@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Nav from './components/Nav';
-import ProductList from './components/ProductList';
+import ProductList from './components/ProductList/ProductList';
 import Header from './components/Header';
 
 type ProductType = 'fruit' | 'vegetables';
