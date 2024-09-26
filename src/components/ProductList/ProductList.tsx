@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { mockData } from '../../mock-data/mockData';
-import ProductCard from '../ProductCard';
+import ProductCard from '../ProductCard/ProductCard';
 
 type ProductType = 'fruit' | 'vegetables';
 

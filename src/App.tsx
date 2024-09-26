@@ -21,7 +21,12 @@ function App() {
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} />
       <main className="flex flex-1">
         <aside className="w-64 bg-gray-100 p-4">
-          <Nav activeProduct={activeProduct} setActiveProduct={setActiveProduct} />
+          <Nav
+            activeProduct={activeProduct}
+            setActiveProduct={setActiveProduct}
+            setSearchQuery={setSearchQuery}
+            setSearchTerm={setSearchTerm}
+          />
         </aside>
         <section className="flex-1 p-8">
           <ProductList activeProduct={activeProduct} searchQuery={searchQuery} />
