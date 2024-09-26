@@ -12,7 +12,7 @@ const ProductCard = ({ name, price, unit, image }: ProductCardProps) => {
       <div className="p-4">
         <h3 className="font-bold text-lg mb-2">{name}</h3>
         <p className="text-gray-700">
-          ${price.toFixed(2)} per {unit}
+          ${price} per {unit}
         </p>
       </div>
     </div>

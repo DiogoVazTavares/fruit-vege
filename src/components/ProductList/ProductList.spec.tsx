@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ProductList from './ProductList';
 import { vi } from 'vitest';
 
 // Mock the mockData
-vi.mock('../mock-data/mockData', () => ({
+vi.mock('../../mock-data/mockData', () => ({
   mockData: {
     fruit: [
       { id: 1, name: 'Apple', price: 1.99, unit: 'kg', image: 'apple.jpg' },
@@ -24,6 +24,10 @@ vi.mock('../mock-data/mockData', () => ({
 }));
 
 describe('', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('renders fruit list correctly', () => {
     render(<ProductList activeProduct="fruit" searchQuery="" />);
 
@@ -45,5 +49,70 @@ describe('', () => {
     expect(screen.getByText('Tomato')).toBeInTheDocument();
     expect(screen.getByText('Cucumber')).toBeInTheDocument();
     expect(screen.queryByText('Lettuce')).not.toBeInTheDocument();
+  });
+
+  it('pagination works correctly', () => {
+    let pageToTest = 'Page 1 of 2';
+
+    render(<ProductList activeProduct="fruit" searchQuery="" />);
+    const paginationText = (_: string, node: Element | null) => {
+      const hasText = (node: Element | null) => node?.textContent === pageToTest;
+      const nodeHasText = hasText(node);
+      const childrenDontHaveText = Array.from(node?.children || []).every((child) => !hasText(child));
+
+      return nodeHasText && childrenDontHaveText;
+    };
+
+    // Check initial page
+    expect(screen.getByText(paginationText)).toBeInTheDocument();
+    expect(screen.getByText('Apple')).toBeInTheDocument();
+    expect(screen.queryByText('Mango')).not.toBeInTheDocument();
+
+    // Go to next page
+    pageToTest = 'Page 2 of 2';
+    fireEvent.click(screen.getByText('Next'));
+    expect(screen.getByText(paginationText)).toBeInTheDocument();
+    expect(screen.getByText('Mango')).toBeInTheDocument();
+    expect(screen.queryByText('Apple')).not.toBeInTheDocument();
+
+    // Go back to previous page
+    pageToTest = 'Page 1 of 2';
+    fireEvent.click(screen.getByText('Previous'));
+    expect(screen.getByText(paginationText)).toBeInTheDocument();
+    expect(screen.getByText('Apple')).toBeInTheDocument();
+    expect(screen.queryByText('Mango')).not.toBeInTheDocument();
+  });
+
+  it('filters products based on search query', () => {
+    render(<ProductList activeProduct="fruit" searchQuery="ap" />);
+
+    expect(screen.getByText('Apple')).toBeInTheDocument();
+    expect(screen.queryByText('Banana')).not.toBeInTheDocument();
+    expect(screen.queryByText('Orange')).not.toBeInTheDocument();
+    expect(screen.queryByText('Strawberry')).not.toBeInTheDocument();
+    expect(screen.queryByText('Mango')).not.toBeInTheDocument();
+
+    // Check pagination buttons
+    expect(screen.queryByText('Next')).not.toBeInTheDocument();
+    expect(screen.queryByText('Previous')).not.toBeInTheDocument();
+  });
+
+  it('displays "No products found" message when search query yields no results', () => {
+    render(<ProductList activeProduct="fruit" searchQuery="xyz" />);
+
+    expect(screen.getByText('No products found')).toBeInTheDocument();
+  });
+
+  it('updates product list when activeProduct changes', () => {
+    const { rerender } = render(<ProductList activeProduct="fruit" searchQuery="" />);
+
+    expect(screen.getByText('Fruits')).toBeInTheDocument();
+    expect(screen.getByText('Apple')).toBeInTheDocument();
+
+    rerender(<ProductList activeProduct="vegetables" searchQuery="" />);
+
+    expect(screen.getByText('Vegetables')).toBeInTheDocument();
+    expect(screen.getByText('Carrot')).toBeInTheDocument();
+    expect(screen.queryByText('Apple')).not.toBeInTheDocument();
   });
 });

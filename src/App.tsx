@@ -19,7 +19,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} />
-      <main className="flex min-h-screen">
+      <main className="flex flex-1">
         <aside className="w-64 bg-gray-100 p-4">
           <Nav activeProduct={activeProduct} setActiveProduct={setActiveProduct} />
         </aside>
